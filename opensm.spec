@@ -4,7 +4,7 @@
 #
 Name     : opensm
 Version  : 3.3.19
-Release  : 2
+Release  : 3
 URL      : https://www.openfabrics.org/downloads/management/opensm-3.3.19.tar.gz
 Source0  : https://www.openfabrics.org/downloads/management/opensm-3.3.19.tar.gz
 Summary  : InfiniBand subnet manager and administration
