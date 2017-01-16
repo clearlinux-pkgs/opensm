@@ -4,7 +4,7 @@
 #
 Name     : opensm
 Version  : 3.3.20
-Release  : 4
+Release  : 5
 URL      : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Source0  : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Summary  : InfiniBand subnet manager and administration
@@ -62,6 +62,8 @@ lib components for the opensm package.
 %setup -q -n opensm-3.3.20
 
 %build
+export LANG=C
+export SOURCE_DATE_EPOCH=1484584877
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -73,6 +75,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
+export SOURCE_DATE_EPOCH=1484584877
 rm -rf %{buildroot}
 %make_install
 
@@ -180,7 +183,9 @@ rm -rf %{buildroot}
 /usr/include/infiniband/vendor/osm_vendor_api.h
 /usr/include/infiniband/vendor/osm_vendor_ibumad.h
 /usr/include/infiniband/vendor/osm_vendor_sa_api.h
-/usr/lib64/*.so
+/usr/lib64/libopensm.so
+/usr/lib64/libosmcomp.so
+/usr/lib64/libosmvendor.so
 
 %files doc
 %defattr(-,root,root,-)
@@ -189,4 +194,9 @@ rm -rf %{buildroot}
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libopensm.so.5
+/usr/lib64/libopensm.so.5.2.3
+/usr/lib64/libosmcomp.so.3
+/usr/lib64/libosmcomp.so.3.0.10
+/usr/lib64/libosmvendor.so.4
+/usr/lib64/libosmvendor.so.4.0.2
