@@ -1,0 +1,4 @@
+Configure miss: request_init in -lwrap
+Configure miss: to enable console socket
+Configure miss: to enable perf mgr profiling
+Configure miss: to enable default event plugin

@@ -4,7 +4,7 @@
 #
 Name     : opensm
 Version  : 3.3.20
-Release  : 6
+Release  : 7
 URL      : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Source0  : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Summary  : InfiniBand subnet manager and administration
@@ -15,7 +15,7 @@ Requires: opensm-lib
 Requires: opensm-doc
 BuildRequires : bison
 BuildRequires : flex
-BuildRequires : libibumad-dev
+BuildRequires : rdma-core-dev
 
 %description
 OpenSM provides an implementation of an InfiniBand Subnet Manager and
@@ -62,8 +62,11 @@ lib components for the opensm package.
 %setup -q -n opensm-3.3.20
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1484584877
+export SOURCE_DATE_EPOCH=1506718787
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -71,11 +74,11 @@ make V=1  %{?_smp_mflags}
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1484584877
+export SOURCE_DATE_EPOCH=1506718787
 rm -rf %{buildroot}
 %make_install
 
