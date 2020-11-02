@@ -4,15 +4,16 @@
 #
 Name     : opensm
 Version  : 3.3.20
-Release  : 10
+Release  : 11
 URL      : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Source0  : https://www.openfabrics.org/downloads/management/opensm-3.3.20.tar.gz
 Summary  : InfiniBand subnet manager and administration
 Group    : Development/Tools
 License  : BSD-2-Clause GPL-2.0
-Requires: opensm-bin
-Requires: opensm-lib
-Requires: opensm-doc
+Requires: opensm-bin = %{version}-%{release}
+Requires: opensm-lib = %{version}-%{release}
+Requires: opensm-license = %{version}-%{release}
+Requires: opensm-man = %{version}-%{release}
 BuildRequires : bison
 BuildRequires : flex
 BuildRequires : rdma-core-dev
@@ -26,6 +27,7 @@ InfiniBand subnet).
 %package bin
 Summary: bin components for the opensm package.
 Group: Binaries
+Requires: opensm-license = %{version}-%{release}
 
 %description bin
 bin components for the opensm package.
@@ -34,52 +36,73 @@ bin components for the opensm package.
 %package dev
 Summary: dev components for the opensm package.
 Group: Development
-Requires: opensm-lib
-Requires: opensm-bin
-Provides: opensm-devel
+Requires: opensm-lib = %{version}-%{release}
+Requires: opensm-bin = %{version}-%{release}
+Provides: opensm-devel = %{version}-%{release}
+Requires: opensm = %{version}-%{release}
 
 %description dev
 dev components for the opensm package.
 
 
-%package doc
-Summary: doc components for the opensm package.
-Group: Documentation
-
-%description doc
-doc components for the opensm package.
-
-
 %package lib
 Summary: lib components for the opensm package.
 Group: Libraries
+Requires: opensm-license = %{version}-%{release}
 
 %description lib
 lib components for the opensm package.
 
 
+%package license
+Summary: license components for the opensm package.
+Group: Default
+
+%description license
+license components for the opensm package.
+
+
+%package man
+Summary: man components for the opensm package.
+Group: Default
+
+%description man
+man components for the opensm package.
+
+
 %prep
 %setup -q -n opensm-3.3.20
+cd %{_builddir}/opensm-3.3.20
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1506718787
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604353923
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1506718787
+export SOURCE_DATE_EPOCH=1604353923
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/opensm
+cp %{_builddir}/opensm-3.3.20/COPYING %{buildroot}/usr/share/package-licenses/opensm/97bcb0df5ff699d85762a65622b272a1ac79c93c
 %make_install
 
 %files
@@ -190,11 +213,6 @@ rm -rf %{buildroot}
 /usr/lib64/libosmcomp.so
 /usr/lib64/libosmvendor.so
 
-%files doc
-%defattr(-,root,root,-)
-%doc /usr/share/man/man5/*
-%doc /usr/share/man/man8/*
-
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libopensm.so.5
@@ -203,3 +221,14 @@ rm -rf %{buildroot}
 /usr/lib64/libosmcomp.so.3.0.10
 /usr/lib64/libosmvendor.so.4
 /usr/lib64/libosmvendor.so.4.0.2
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/opensm/97bcb0df5ff699d85762a65622b272a1ac79c93c
+
+%files man
+%defattr(0644,root,root,0755)
+/usr/share/man/man5/torus-2QoS.conf.5
+/usr/share/man/man8/opensm.8
+/usr/share/man/man8/osmtest.8
+/usr/share/man/man8/torus-2QoS.8
